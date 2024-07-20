@@ -24,28 +24,29 @@ services:
       - /mnt/HC_Volume_35080261/cadaster:/cadaster
       - ./cadaster/data.db:/app/data.db
 
-  nocodb:
-    image: "nocodb/nocodb:latest"
-    restart: unless-stopped
-    volumes:
-      - "./nc.data:/usr/app/data"
-      - ./cadaster/data.db:/usr/app/data/data.db
-    networks:
-      - traefik-net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.${PROJECT_NAME}nc.entrypoints=web"
-      - "traefik.http.routers.${PROJECT_NAME}nc.rule=Host(`nc${DOMAIN}`)"
-      - "traefik.http.routers.${PROJECT_NAME}nc.middlewares=https-redirect"
-      - "traefik.http.routers.${PROJECT_NAME}nc-secure.entrypoints=websecure"
-      - "traefik.http.routers.${PROJECT_NAME}nc-secure.rule=Host(`nc${DOMAIN}`)"
-      - "traefik.http.routers.${PROJECT_NAME}nc-secure.tls=true"
-      - "traefik.http.routers.${PROJECT_NAME}nc-secure.tls.certresolver=letsencrypt"
-      - "traefik.http.services.${PROJECT_NAME}nc.loadbalancer.server.port=8080"
-      - "traefik.docker.network=traefik-net"
+  # nocodb:
+  #   image: "nocodb/nocodb:latest"
+  #   restart: unless-stopped
+  #   volumes:
+  #     - "./nc.data:/usr/app/data"
+  #     - ./cadaster/data.db:/usr/app/data/data.db
+  #   networks:
+  #     - traefik-net
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.${PROJECT_NAME}nc.entrypoints=web"
+  #     - "traefik.http.routers.${PROJECT_NAME}nc.rule=Host(`nc${DOMAIN}`)"
+  #     - "traefik.http.routers.${PROJECT_NAME}nc.middlewares=https-redirect"
+  #     - "traefik.http.routers.${PROJECT_NAME}nc-secure.entrypoints=websecure"
+  #     - "traefik.http.routers.${PROJECT_NAME}nc-secure.rule=Host(`nc${DOMAIN}`)"
+  #     - "traefik.http.routers.${PROJECT_NAME}nc-secure.tls=true"
+  #     - "traefik.http.routers.${PROJECT_NAME}nc-secure.tls.certresolver=letsencrypt"
+  #     - "traefik.http.services.${PROJECT_NAME}nc.loadbalancer.server.port=8080"
+  #     - "traefik.docker.network=traefik-net"
 
   serve:
     image: joseluisq/static-web-server:2
+    restart: unless-stopped
     environment:
       # Note: those envs are customizable but also optional
       # - SERVER_HOST=127.0.0.1
@@ -87,7 +88,7 @@ services:
   keygen:
     build: ./keygen
     command: npm start
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./keygen:/app
     # ports:
@@ -95,7 +96,7 @@ services:
 
   redis:
     image: redis:alpine
-    restart: always
+    restart: unless-stopped
     # ports:
     #   - 6379:6379
     volumes:
